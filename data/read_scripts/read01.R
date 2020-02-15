@@ -25,7 +25,7 @@ colnames(result) <- features[-var_exception]
 
 for (i in 1:length(data)) {
     result[i,] <- apply(pos, 1, 
-                    function(r) as.integer(paste(data_split_bytes[[i]][seq(r[1], r[2])], collapse="")))
+                    function(r) as.numeric(paste(data_split_bytes[[i]][seq(r[1], r[2])], collapse="")))
 }
 # 5. Date columns are appended at the end for convenience
 result$G12B <- unlist(lapply(data_split_bytes, function(s) 

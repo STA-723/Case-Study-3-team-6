@@ -163,4 +163,25 @@ ggplot(df) + geom_col(aes(names, missing)) +
 
 It is both interesting and reasonable to recognize here that Question C16, which asks underage drinkers how they obtain alcohol, has the largest number of missing values.
 
-I hope these summaries are helpful for you when you are actually fitting the model. One thing to beware is that there is a mix of ordinal and categorical variables here, so this may or may not cause you fitting issues.
+Whatever responses that are in truth not missing should be informatively adjusted for by the model. E.g., if a participant did not answer to C16 simply because she is older than 21, maybe we should not include the predictor to begin with for a subset of the participants. __Any ideas on this__?
+
+# Encoding of responses
+To facilitate the interpretation of the model for ordinal variables, any response options that were not consistently coded are recoded in the following direction:
+
+    * Section B: More stringent policy beliefs (Less) -> Lenient policy beliefs (More)
+    
+    * Section C: Less alcohol consumption (Less) -> More consumption (More)
+    
+Responses to questions B7, C3, C15, and C16 are categorical. For questions C20 and C22, direction of encoding is Not At All Important (less reliance) -> Very Important (more reliance).
+
+```{r}
+# B7. C3, C15, and C16 are categorical variables
+features$B3 <- (5+1) - features$B3
+features$B4 <- (4+1) - features$B4
+features$B5 <- as.integer(factor(features$B5, levels = c(4, 2, 1, 3)))
+features$B19 <- (5+1) - features$B19
+features[,grepl("C20", colnames(features))] <- apply(features[,grepl("C20", colnames(features))], 2, function(x) (4+1) - x)
+features[,grepl("C22", colnames(features))] <- apply(features[,grepl("C22", colnames(features))], 2, function(x) (4+1) - x)
+```
+
+I believe this should offer us all a common starting point.

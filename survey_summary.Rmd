@@ -160,8 +160,12 @@ Examining how many respones are missing for each of the questions, correcting fo
 
 ```{r}
 df <- data.frame(names = colnames(missing_a), missing = c(colSums(missing_a)))
-ggplot(df) + geom_col(aes(names, missing)) + 
-    labs(x = NULL, title = "Missing response per Question")
+ggplot(df[1:14,]) + geom_col(aes(names, missing)) + 
+    labs(x = NULL, title = "Missing response per Question (Sec. B)")
+ggplot(df[15:92,]) + geom_col(aes(names, missing)) + 
+    labs(x = NULL, title = "Missing response per Question (Sec. C)")
+ggplot(df[92:nrow(df),]) + geom_col(aes(names, missing)) + 
+    labs(x = NULL, title = "Missing response per Question (Others)")
 ```
 Question B4 had the most missing response ("Do you agree with the way your college is dealing with alcohol?"), followed by C5 ("How long did it take you to consume the number of drinks indicated in C4?"), and subquestions for C17 ("Since the beginning of the school year, how often has drinking caused ... [problems]?"). 
 
@@ -190,13 +194,13 @@ I believe this should offer us all a common starting point.
 
     1. Sub-divide the participants into different groups. This depends on which questions they had to answer in Section C. The groups will be
     
-        i. < Age 21, drink in previous 30 days
+        i. Had >=4 drinks in a row within last two weeks (habitual binge drinker)
         
-        ii. >= Age 21, drink in previous 30 days
+        ii. Not above, but had drinks within 30 days (habitual drinker)
         
-        iii. Drink in previous year (but not within prev. 30 days)
+        iii. Drink in previous year but > 30 days ago (occasional drinker)
         
-        iv. No drink in previous year
+        iv. No drink in previous year (little to no drinker)
     
     A tricky situation happens if the participant did not respond to precisely those questions that allow us to classify her into one of the groups. We discard those cases for simplicity of the model.
     
@@ -212,14 +216,5 @@ I believe this should offer us all a common starting point.
         
         v. Interpret what is actually going on (this is likely going to be challenging).
 
-```{r pre_modeling}
-# Subdividing the data into four groups
-# Discards 38 people for whom we cannot obtain the info.
-library(dplyr)
-features$weights <- cas01$WEIGHT01 # Sampling weights are for cross-sectional study (see codebook)
-group1 <- features %>% filter(A1 < 21, C10 > 3)
-group2 <- features %>% filter(A1 >= 21, C10 > 3)
-group3 <- features %>% filter(C10 == 3)
-group4 <- features %>% filter(C10 < 3)
-```
-
+# Problems: Unreliable responses
+Take A7, which allows multiple responses. There are at least 34 people who responded they live alone _and_ also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 322 participants who thought even though they responded "None" to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. How?

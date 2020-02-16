@@ -10,7 +10,6 @@ library(dplyr)
 library(ggplot2)
 ```
 
-
 A document to summarize which variables we are interested in including in the model. All of you can make edits to the file/comment on whether my justification is appropriate. I did consider Melody's list before compiling these.
 
 Essential idea is that I divide the variables into three groups: 1. Observed varaibles relating to subjective measure of alcohol consumption beliefs; 2. Observed variables relating to objective measure of alcohol consumption; 3. Demographic predictors to be adjusted for. 
@@ -126,6 +125,7 @@ predictor_names <- c(paste0("A", 1:6),
 
 variable_names <- c(sectionb_names, sectionc_names, predictor_names)
 features <- cas01[,variable_names]
+features$weights <- cas01$WEIGHT01
 missing_a <- is.na(features)
 
 # Corrections
@@ -238,17 +238,13 @@ na_zero_to_zero <- function(x) return((!is.na(x) & x))
 features$prev_survey <- ifelse(!is.na(features$G19E) & features$G19E, 
                                0, 
                                rowSums(features[,126:130], na.rm=T))
-features <- features[,!grepl("G19", variable_names)]
-
+features <- features[,!grepl("G19", colnames(features))]
 # Reliability: 1st criterion
 # Did someone make a reasonable answer to A7? (alone & someone else)
 features$unreliable <- (features$A7A==1 & rowSums(features[,c("A7B", "A7C", "A7D")], na.rm=T)>0)
 features$A7B <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7B)
 features$A7C <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7C)
 features$A7D <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7D)
-
-predictor_names <- c(predictor_names[!grepl("G19", predictor_names)], "prev_survey", "unreliable")
-variable_names <- colnames(features) # modified
 
 # Changing NA's in G3 to 0 (unless the participant has not recorded any response at all!)
 nonmis_indices <- apply(features[,grepl("G3", variable_names)], 1, function(x) !all(is.na(x)))
@@ -260,6 +256,7 @@ features[nonmis_indices, grepl("G3", variable_names)] <-
 # There is no participant for which we have ALL missing response.
 # There are 1330 participants for whom there exist some missing response for potential predictors.
 #
+predictor_names <- predictor_names[!grepl("G19", predictor_names)]
 features_complete <- features[!apply(features[,predictor_names], 1, anyNA),]
 ```
 
@@ -276,6 +273,7 @@ group4 <- features_complete %>% filter(C10 <= 2)
 group2$unreliable <- ifelse(!is.na(group2$C6), 1, group2$unreliable) # 210
 group3$unreliable <- ifelse(!is.na(group3$C6), 1, group3$unreliable) # 85
 group4$unreliable <- ifelse(!is.na(group4$C6), 1, group4$unreliable) # 34
+
 # For group4, exist people who reponded to group 1/2/3 section (C17 ~ C21)
 group4$unreliable <- ifelse(apply(group4[,34:73], 1, function(x) !all(is.na(x))), 1, group4$unreliable) # 250
 

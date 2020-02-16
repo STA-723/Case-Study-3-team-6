@@ -492,6 +492,32 @@ features[,grepl(&quot;C20&quot;, colnames(features))] &lt;- apply(features[,grep
 features[,grepl(&quot;C22&quot;, colnames(features))] &lt;- apply(features[,grepl(&quot;C22&quot;, colnames(features))], 2, function(x) (4+1) - x)</code></pre>
 <p>I believe this should offer us all a common starting point.</p>
 </div>
+<div id="model-what-do-we-want-to-fit" class="section level1">
+<h1>Model: What do we want to fit?</h1>
+<pre><code>1. Sub-divide the participants into different groups. This depends on which questions they had to answer in Section C. The groups will be
+
+    i. &lt; Age 21, drink in previous 30 days
+    
+    ii. &gt;= Age 21, drink in previous 30 days
+    
+    iii. Drink in previous year
+    
+    iv. No drink in previous year
+
+A tricky situation happens if the participant did not respond to precisely those questions that allow us to classify her into one of the groups. We discard those cases for simplicity of the model.
+
+2. For now, fit a separate SEM model for each of the groups. 
+
+    i. Exogenous variables are not &quot;manifested,&quot; but rather directly observed, to keep the model fit under control. This means some imputation scheme is needed for the missing demographic variables.
+    
+    ii. Allow some correlation across questions conditional on the latent effects (factor scores). Especially for those questions which are really sub-questions.
+    
+    iii. Missing value should not really be a concern; if, however, computation is too taxing, we should be able to get away with some simple imputation scheme.
+
+    iv. Include the 2001 sampling weights (not calibrated with the previous years&#39; weights). The `lavaan` package states that it scales the weights if they do not sum up, but I think it will be safe to just scale them by myself manually when fitting different sub-population group models.
+    
+    v. Interpret what is actually going on (this is likely going to be challenging).</code></pre>
+</div>
 
 
 

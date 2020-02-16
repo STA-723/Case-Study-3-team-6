@@ -88,18 +88,21 @@ For 3., I excluded any variables that may be considerd "confounders," in that ev
     - G19A ~ E. (Whether a respondent has complete previous-year survey or not)
 
 # Overview of Response rates
-First, we may want to exclude from our sample those participants who have not responded to too many questions. Necessary adjustments are done to account for questions that allow multiple responses, or only target certain participants, etc, to obtain "true" missingness rates. The `missing_a` object refers to a binary matrix of missingness indices.
+First, we may want to exclude from our sample those participants who have not responded to too many questions. Necessary adjustments are done to account for questions that allow multiple responses, or only target certain participants, etc, to obtain "true" missingness rates. The `missing_a` object refers to a binary matrix of missingness indices. __Categorical variables are excluded, as they cannot be dealt very well as endogenous variables in our SEM implementation (B7, C3, C15, C16).__
 
 ```{r, echo=FALSE}
 cas01 <- read.csv("data/HarvardCAS01.csv")
 
 sectionb_names <- c(paste0("B", c(1, 3, 4, 5)), 
-                    colnames(cas01)[grepl("B7", colnames(cas01))], "B19",
+                    #colnames(cas01)[grepl("B7", colnames(cas01))], 
+                    "B19",
                     colnames(cas01)[grepl("B21", colnames(cas01))])
-sectionc_names <- c(paste0("C", c(1:7, 9, 10:13)), 
+sectionc_names <- c("C1", "C2",
+                    #"C3",
+                    paste0("C", c(4:7, 9, 10:13)),
                     colnames(cas01)[grepl("C14", colnames(cas01))],
-                    colnames(cas01)[grepl("C15", colnames(cas01))],
-                    colnames(cas01)[grepl("C16", colnames(cas01))],
+                    #colnames(cas01)[grepl("C15", colnames(cas01))],
+                    #colnames(cas01)[grepl("C16", colnames(cas01))],
                     colnames(cas01)[grepl("C17", colnames(cas01))],
                     colnames(cas01)[grepl("C18", colnames(cas01))],
                     colnames(cas01)[grepl("C19", colnames(cas01))],
@@ -119,16 +122,15 @@ features <- cas01[,c(sectionb_names, sectionc_names, predictor_names)]
 missing_a <- is.na(features)
 
 # Corrections
+#missing_a[features$A1 >= 21 & !is.na(features$A1), colnames(features)[grepl("C16", colnames(features))]] <- FALSE
 
-missing_a[features$A1 >= 21 & !is.na(features$A1), colnames(features)[grepl("C16", colnames(features))]] <- FALSE
-
-missing_a[features$C1 == 1 & features$C2 == 1 & !is.na(features$C1) & !is.na(features$C1), c("C3", "C4", "C5", "C6")] <- FALSE
+missing_a[features$C1 == 1 & features$C2 == 1 & !is.na(features$C1) & !is.na(features$C1), c("C4", "C5", "C6")] <- FALSE
 
 missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C11", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C12", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C13", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C14", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C15", colnames(features))]] <- FALSE
+#missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C15", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C17", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C18", colnames(features))]] <- FALSE
 missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C19", colnames(features))]] <- FALSE
@@ -147,7 +149,9 @@ missing_a[apply(features[,grepl("G19", colnames(features))], 1, function(x) sum(
 ```
 
 ```{r}
-hist(rowSums(missing_a), main = "Missing response per Participant")
+library(ggplot2)
+ggplot(data.frame(missing_per_person = rowSums(missing_a))) + geom_bar(aes(missing_per_person)) + 
+    labs(title = "Missing response per person")
 ```
 
 It will be safe to exclude a number of participants who have filled out too few a questions on the survey based on the histogram.
@@ -155,15 +159,11 @@ It will be safe to exclude a number of participants who have filled out too few 
 Examining how many respones are missing for each of the questions, correcting for the fact that many questions ask only a part of the entire participants to respond.
 
 ```{r}
-library(ggplot2)
 df <- data.frame(names = colnames(missing_a), missing = c(colSums(missing_a)))
 ggplot(df) + geom_col(aes(names, missing)) + 
     labs(x = NULL, title = "Missing response per Question")
 ```
-
-It is both interesting and reasonable to recognize here that Question C16, which asks underage drinkers how they obtain alcohol, has the largest number of missing values.
-
-Whatever responses that are in truth not missing should be informatively adjusted for by the model. E.g., if a participant did not answer to C16 simply because she is older than 21, maybe we should not include the predictor to begin with for a subset of the participants. __Any ideas on this__?
+Question B4 had the most missing response ("Do you agree with the way your college is dealing with alcohol?"), followed by C5 ("How long did it take you to consume the number of drinks indicated in C4?"), and subquestions for C17 ("Since the beginning of the school year, how often has drinking caused ... [problems]?"). 
 
 # Encoding of responses
 To facilitate the interpretation of the model for ordinal variables, any response options that were not consistently coded are recoded in the following direction:

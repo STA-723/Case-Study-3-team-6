@@ -217,4 +217,35 @@ I believe this should offer us all a common starting point.
         v. Interpret what is actually going on (this is likely going to be challenging).
 
 # Problems: Unreliable responses
-Take A7, which allows multiple responses. There are at least 34 people who responded they live alone _and_ also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 322 participants who thought even though they responded "None" to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. How?
+Take A7, which allows multiple responses. There are at least 30 people who responded they live alone _and_ also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 329 participants who thought even though they responded "None" to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. How?
+
+```{r grouping}
+# Convert G19 into integer variable
+# Those participants who didn't pick any response (not even "No, never") will be simply imputed as
+# never having completed the survey before
+features$prev_survey <- ifelse(!is.na(features$G19E) & features$G19E, 
+                               0, 
+                               rowSums(features[,126:130], na.rm=T))
+#
+# Reliability: 1st criterion
+# Did someone make a reasonable answer to A7? (alone & someone else)
+features$unreliable <- (features$A7A==1 & rowSums(features[,c("A7B", "A7C", "A7D")], na.rm=T)>0)
+features$A7B <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7B)
+features$A7C <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7C)
+features$A7D <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7D)
+#
+group1 <- features %>% filter(C1!=1 | C2!=1)
+group2 <- features %>% filter(C1==1, C2==1, C10 > 3)
+group3 <- features %>% filter(C10 == 3)
+group4 <- features %>% filter(C10 <= 2)
+# Excluded: 72 people who do not meet the above filter (missing response in some of the questions)
+#
+# 2nd criterion (Question C7)
+# Did someone make a mistake in responding to sections one is not expected to?
+group2$unreliable <- ifelse(!is.na(group2$C6), 1, group2$unreliable) # 210
+group3$unreliable <- ifelse(!is.na(group3$C6), 1, group3$unreliable) # 85
+group4$unreliable <- ifelse(!is.na(group4$C6), 1, group4$unreliable) # 34
+# For group4, exist people who reponded to group 1/2/3 section (C17 ~ C21)
+group4$unreliable <- ifelse(apply(group4[,34:73], 1, function(x) !all(is.na(x))), 1, group4$unreliable) # 250
+```
+

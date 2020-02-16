@@ -1,0 +1,44 @@
+---
+title: "Modeling Relationship between Alcohol Policy Perception and Alcohol Consumption in '01 Harvard College Alcohol Survey (CAS)"
+author: "Youngsoo Baek, Michael Christensen, and Yufeng Jiang"
+output: 
+    beamer_presentation:
+        theme: "default"
+        colortheme: "beaver"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = FALSE,
+    fig.align = "c", fig.width = 6, fig.height = 4.5, 
+    out.width = 6, out.height = 4.5, fig.path = "figures/")
+```
+
+## Objective
+
+...
+
+## Data Processing
+
+...
+
+## Methods
+
+...
+
+## Challenges
+
+...
+
+## Main Results
+
+...
+
+## Model Diagnostics
+
+...
+
+## Conclusion
+
+...
+

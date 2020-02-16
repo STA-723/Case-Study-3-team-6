@@ -3,6 +3,14 @@ title: "What to Do Before Fitting"
 output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+cas01 <- read.csv("data/HarvardCAS01.csv")
+library(dplyr)
+library(ggplot2)
+```
+
+
 A document to summarize which variables we are interested in including in the model. All of you can make edits to the file/comment on whether my justification is appropriate. I did consider Melody's list before compiling these.
 
 Essential idea is that I divide the variables into three groups: 1. Observed varaibles relating to subjective measure of alcohol consumption beliefs; 2. Observed variables relating to objective measure of alcohol consumption; 3. Demographic predictors to be adjusted for. 
@@ -90,9 +98,7 @@ For 3., I excluded any variables that may be considerd "confounders," in that ev
 # Overview of Response rates
 First, we may want to exclude from our sample those participants who have not responded to too many questions. Necessary adjustments are done to account for questions that allow multiple responses, or only target certain participants, etc, to obtain "true" missingness rates. The `missing_a` object refers to a binary matrix of missingness indices. __Categorical variables are excluded, as they cannot be dealt very well as endogenous variables in our SEM implementation (B7, C3, C15, C16).__
 
-```{r, echo=FALSE}
-cas01 <- read.csv("data/HarvardCAS01.csv")
-
+```{r}
 sectionb_names <- c(paste0("B", c(1, 3, 4, 5)), 
                     #colnames(cas01)[grepl("B7", colnames(cas01))], 
                     "B19",
@@ -118,7 +124,8 @@ predictor_names <- c(paste0("A", 1:6),
                      "G7", "G8", "G13",
                      colnames(cas01)[grepl("G19", colnames(cas01))])[-11] # We don't want E29A7!
 
-features <- cas01[,c(sectionb_names, sectionc_names, predictor_names)]
+variable_names <- c(sectionb_names, sectionc_names, predictor_names)
+features <- cas01[,variable_names]
 missing_a <- is.na(features)
 
 # Corrections
@@ -126,30 +133,29 @@ missing_a <- is.na(features)
 
 missing_a[features$C1 == 1 & features$C2 == 1 & !is.na(features$C1) & !is.na(features$C1), c("C4", "C5", "C6")] <- FALSE
 
-missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C11", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C12", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C13", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C14", colnames(features))]] <- FALSE
-#missing_a[features$C10 <= 3 & !is.na(features$C10),colnames(features)[grepl("C15", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C17", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C18", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C19", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C20", colnames(features))]] <- FALSE
-missing_a[features$C10 <= 2 & !is.na(features$C10),colnames(features)[grepl("C21", colnames(features))]] <- FALSE
+missing_a[features$C10 <= 3 & !is.na(features$C10),variable_names[grepl("C11", variable_names)]] <- FALSE
+missing_a[features$C10 <= 3 & !is.na(features$C10),variable_names[grepl("C12", variable_names)]] <- FALSE
+missing_a[features$C10 <= 3 & !is.na(features$C10),variable_names[grepl("C13", variable_names)]] <- FALSE
+missing_a[features$C10 <= 3 & !is.na(features$C10),variable_names[grepl("C14", variable_names)]] <- FALSE
+#missing_a[features$C10 <= 3 & !is.na(features$C10),variable_names[grepl("C15", variable_names)]] <- FALSE
+missing_a[features$C10 <= 2 & !is.na(features$C10),variable_names[grepl("C17", variable_names)]] <- FALSE
+missing_a[features$C10 <= 2 & !is.na(features$C10),variable_names[grepl("C18", variable_names)]] <- FALSE
+missing_a[features$C10 <= 2 & !is.na(features$C10),variable_names[grepl("C19", variable_names)]] <- FALSE
+missing_a[features$C10 <= 2 & !is.na(features$C10),variable_names[grepl("C20", variable_names)]] <- FALSE
+missing_a[features$C10 <= 2 & !is.na(features$C10),variable_names[grepl("C21", variable_names)]] <- FALSE
 
-missing_a[apply(features[,grepl("A7", colnames(features))], 1, function(x) sum(is.na(x))) != 4, 
-          grepl("A7", colnames(features))] <- FALSE
+missing_a[apply(features[,grepl("A7", variable_names)], 1, function(x) sum(is.na(x))) != 4, 
+          grepl("A7", variable_names)] <- FALSE
 
-missing_a[apply(features[,grepl("G3", colnames(features))], 1, function(x) sum(is.na(x))) != 5, 
-          grepl("G3", colnames(features))] <- FALSE
+missing_a[apply(features[,grepl("G3", variable_names)], 1, function(x) sum(is.na(x))) != 5, 
+          grepl("G3", variable_names)] <- FALSE
 
-missing_a[apply(features[,grepl("G19", colnames(features))], 1, function(x) sum(is.na(x))) != 5, 
-          grepl("G19", colnames(features))] <- FALSE
+missing_a[apply(features[,grepl("G19", variable_names)], 1, function(x) sum(is.na(x))) != 5, 
+          grepl("G19", variable_names)] <- FALSE
 
 ```
 
 ```{r}
-library(ggplot2)
 ggplot(data.frame(missing_per_person = rowSums(missing_a))) + geom_bar(aes(missing_per_person)) + 
     labs(title = "Missing response per person")
 ```
@@ -165,8 +171,9 @@ ggplot(df[1:14,]) + geom_col(aes(names, missing)) +
 ggplot(df[15:92,]) + geom_col(aes(names, missing)) + 
     labs(x = NULL, title = "Missing response per Question (Sec. C)")
 ggplot(df[92:nrow(df),]) + geom_col(aes(names, missing)) + 
-    labs(x = NULL, title = "Missing response per Question (Others)")
+    labs(x = NULL, title = "Missing response per Question (Demographics)")
 ```
+
 Question B4 had the most missing response ("Do you agree with the way your college is dealing with alcohol?"), followed by C5 ("How long did it take you to consume the number of drinks indicated in C4?"), and subquestions for C17 ("Since the beginning of the school year, how often has drinking caused ... [problems]?"). 
 
 # Encoding of responses
@@ -184,8 +191,8 @@ features$B3 <- (5+1) - features$B3
 features$B4 <- (4+1) - features$B4
 features$B5 <- as.integer(factor(features$B5, levels = c(4, 2, 1, 3)))
 features$B19 <- (5+1) - features$B19
-features[,grepl("C20", colnames(features))] <- apply(features[,grepl("C20", colnames(features))], 2, function(x) (4+1) - x)
-features[,grepl("C22", colnames(features))] <- apply(features[,grepl("C22", colnames(features))], 2, function(x) (4+1) - x)
+features[,grepl("C20", variable_names)] <- apply(features[,grepl("C20", variable_names)], 2, function(x) (4+1) - x)
+features[,grepl("C22", variable_names)] <- apply(features[,grepl("C22", variable_names)], 2, function(x) (4+1) - x)
 ```
 
 I believe this should offer us all a common starting point.
@@ -216,29 +223,53 @@ I believe this should offer us all a common starting point.
         
         v. Interpret what is actually going on (this is likely going to be challenging).
 
-# Problems: Unreliable responses
-Take A7, which allows multiple responses. There are at least 30 people who responded they live alone _and_ also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 329 participants who thought even though they responded "None" to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. How?
+# Dealing with Missing cases and Unreliable responses
+Excluding all observations that have missing values in predictors seems like a convenient starting point. There are 1330 cases to be excluded from the analysis. As below, further cases may need to be removed since we do not have enough information about which population group a participant belongs to for the indirect response variables. Alternatively, we can do MICE. Some variable mutation (previous survey experience as numeric, etc.) follows in the code.
 
-```{r grouping}
+On the other hand, there is another data processing issue for unreliable responses. Take A7, which allows multiple responses. There are at least 30 people who responded they live alone _and_ also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 329 participants who thought even though they responded "None" to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. One approach would be first sub-dividing our sample into different population groups, and for each group fitting a _group-wise_ SEM. Fitting can be an issue, but this we can think of later. This also implies that when we subdivide the sample, there will be some cases excluded because their responses are missing for precisely the questions that allow us to classify their population group (56 in this case).
+
+```{r mutate_exclude}
+na_to_zero <- function(x) return(!is.na(x))
+na_zero_to_zero <- function(x) return((!is.na(x) & x))
+
 # Convert G19 into integer variable
 # Those participants who didn't pick any response (not even "No, never") will be simply imputed as
 # never having completed the survey before
 features$prev_survey <- ifelse(!is.na(features$G19E) & features$G19E, 
                                0, 
                                rowSums(features[,126:130], na.rm=T))
-#
+features <- features[,!grepl("G19", variable_names)]
+
 # Reliability: 1st criterion
 # Did someone make a reasonable answer to A7? (alone & someone else)
 features$unreliable <- (features$A7A==1 & rowSums(features[,c("A7B", "A7C", "A7D")], na.rm=T)>0)
 features$A7B <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7B)
 features$A7C <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7C)
 features$A7D <- ifelse(!is.na(features$A7A) & features$A7A, 0, features$A7D)
+
+predictor_names <- c(predictor_names[!grepl("G19", predictor_names)], "prev_survey", "unreliable")
+variable_names <- colnames(features) # modified
+
+# Changing NA's in G3 to 0 (unless the participant has not recorded any response at all!)
+nonmis_indices <- apply(features[,grepl("G3", variable_names)], 1, function(x) !all(is.na(x)))
+features[nonmis_indices, grepl("G3", variable_names)] <- 
+    na_to_zero(features[nonmis_indices, grepl("G3", variable_names)])
+
 #
-group1 <- features %>% filter(C1!=1 | C2!=1)
-group2 <- features %>% filter(C1==1, C2==1, C10 > 3)
-group3 <- features %>% filter(C10 == 3)
-group4 <- features %>% filter(C10 <= 2)
-# Excluded: 72 people who do not meet the above filter (missing response in some of the questions)
+# Complete case / MICE for missing predictors
+# There is no participant for which we have ALL missing response.
+# There are 1330 participants for whom there exist some missing response for potential predictors.
+#
+features_complete <- features[!apply(features[,predictor_names], 1, anyNA),]
+```
+
+```{r grouping}
+#
+group1 <- features_complete %>% filter(C1!=1 | C2!=1)
+group2 <- features_complete %>% filter(C1==1, C2==1, C10 > 3)
+group3 <- features_complete %>% filter(C10 == 3)
+group4 <- features_complete %>% filter(C10 <= 2)
+# Excluded: 56 people who do not meet the above filter (missing response in some of the questions)
 #
 # 2nd criterion (Question C7)
 # Did someone make a mistake in responding to sections one is not expected to?
@@ -247,5 +278,12 @@ group3$unreliable <- ifelse(!is.na(group3$C6), 1, group3$unreliable) # 85
 group4$unreliable <- ifelse(!is.na(group4$C6), 1, group4$unreliable) # 34
 # For group4, exist people who reponded to group 1/2/3 section (C17 ~ C21)
 group4$unreliable <- ifelse(apply(group4[,34:73], 1, function(x) !all(is.na(x))), 1, group4$unreliable) # 250
+
+# Excluding certain variables for each population groups
+group2 <- group2[,-c(17, 18, 19)]
+group3 <- group3[,-c(17:33)]
+group4 <- group4[,-c(17:73)]
 ```
+
+So in total, we have `r nrow(group1) + nrow(group2) + nrow(group3) + nrow(group4)` cases for the analysis, sub-divided into four population groups, for each of which we fit a separate CFA/SEM model. For each of the above outlined four groups we have `r paste(c(nrow(group1), nrow(group2), nrow(group3), nrow(group4)), collapse = ", ")` cases, respectively. 
 

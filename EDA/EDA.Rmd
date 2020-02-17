@@ -1,0 +1,100 @@
+---
+title: "EDA"
+author: "Melody Jiang"
+date: "2/17/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+set.seed(42) # set random seed
+```
+
+```{r, message=FALSE}
+library("VIM")
+library("dplyr")
+library("ggplot2")
+library("gridExtra")
+```
+
+```{r}
+load("processedData_yb.RData") # run this in console
+```
+
+```{r}
+summary(features_complete)
+```
+
+# Missing values visualization
+
+## B1 - B21I
+
+```{r}
+aggr(features_complete %>% select(B1:B21I), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C1 - C13
+
+```{r}
+aggr(features_complete %>% select(C1:C13), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+We notice that there is high percentage of missingness (>50%) in C4 ("The last time you had four or more drinks in a row, how many drinks did you actually have"), C5 ("How long did it take to consume the number of drinks you indicated in question 4"), and C6 ("How much did you pay for one drink that last time you had four or more drinks in a row?"). People might have chosen not to answer because they haven't had four or more drinks in a row.
+
+## C14
+
+```{r}
+aggr(features_complete %>% select(C14A:C14H), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C17
+
+```{r}
+aggr(features_complete %>% select(C17A:C17L), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C18
+
+```{r}
+aggr(features_complete %>% select(C18A:C18F), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C19
+
+```{r}
+aggr(features_complete %>% select(C19A:C19H), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C20
+
+```{r}
+aggr(features_complete %>% select(C20A:C20M), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## C21, C22
+
+```{r}
+aggr(features_complete %>% select(C21:C22S), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## A1 - A7A
+
+```{r}
+aggr(features_complete %>% select(A1:A7A), numbers = TRUE, prop = c(TRUE, FALSE))
+```
+
+## Summary of missing data visualization
+
+We notice that there is high percentage of missingness (>50%) in C4 ("The last time you had four or more drinks in a row, how many drinks did you actually have"), C5 ("How long did it take to consume the number of drinks you indicated in question 4"), and C6 ("How much did you pay for one drink that last time you had four or more drinks in a row?"). People might have chosen not to answer because they haven't had four or more drinks in a row.
+
+For other variables, missingness is around or below 30%.
+
+
+
+
+
+
+

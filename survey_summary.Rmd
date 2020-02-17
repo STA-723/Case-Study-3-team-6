@@ -192,7 +192,8 @@ features$B4 <- (4+1) - features$B4
 features$B5 <- as.integer(factor(features$B5, levels = c(4, 2, 1, 3)))
 features$B19 <- (5+1) - features$B19
 features[,grepl("C20", variable_names)] <- apply(features[,grepl("C20", variable_names)], 2, function(x) (4+1) - x)
-features[,grepl("C22", variable_names)] <- apply(features[,grepl("C22", variable_names)], 2, function(x) (4+1) - x)
+# Don't run code below
+# features[,grepl("C22", variable_names)] <- apply(features[,grepl("C22", variable_names)], 2, function(x) (4+1) - x)
 ```
 
 I believe this should offer us all a common starting point.
@@ -260,3 +261,36 @@ features_complete$unreliable[!is.na(features_complete$C10) & features_complete$C
 ```
 
 So in total, we have `r nrow(features_complete)` cases for the analysis. 
+
+# Additional Processing (after talking w/ Michael)
+```{r}
+#1. A6, G1, and G4 are exogenous variables that are categorical (not ordered)
+binary_mat <- model.matrix(A1 ~ as.factor(A6) + as.factor(G1) + as.factor(G4), data = features_complete)[,-1]
+features_complete <- cbind.data.frame( 
+                  features_complete[,1:97], 
+                  binary_mat[,1:5],
+                  features_complete[,99:112],
+                  binary_mat[,6:9],
+                  features_complete[,114:119],
+                  binary_mat[,10:14],
+                  features_complete[,121:128])
+colnames(features_complete)[grepl("\\(A6", colnames(features_complete))] <- c("A6B", "A6C", "A6D", "A6E", "A6F")
+colnames(features_complete)[grepl("\\(G1", colnames(features_complete))] <- c("G1B", "G1C", "G1D", "G1E")
+colnames(features_complete)[grepl("\\(G4", colnames(features_complete))] <- c("G4B", "G4C", "G4D", "G4E", "G4F")
+
+#2. C11 ~ C20 can be imputed ZERO depending on response to C10
+features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C11", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C12", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C13", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C17", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C18", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C19", colnames(features_complete))]] <- 0
+
+features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C20", colnames(features_complete))]] <- 0
+```
+

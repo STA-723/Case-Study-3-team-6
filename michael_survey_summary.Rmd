@@ -176,7 +176,8 @@ features$B3 <- (5+1) - features$B3
 features$B5 <- as.integer(factor(features$B5, levels = c(4, 2, 1, 3)))
 features$B19 <- (5+1) - features$B19
 features[,grepl("C20", colnames(features))] <- apply(features[,grepl("C20", colnames(features))], 2, function(x) (4+1) - x)
-features[,grepl("C22", colnames(features))] <- apply(features[,grepl("C22", colnames(features))], 2, function(x) (4+1) - x)
+#Shouldn't reverse direction here
+#features[,grepl("C22", colnames(features))] <- apply(features[,grepl("C22", colnames(features))], 2, function(x) (4+1) - x)
 ```
 
 I believe this should offer us all a common starting point.

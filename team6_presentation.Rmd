@@ -8,25 +8,58 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
+library(dplyr)
+library(ggplot2)
+library(knitr)
+opts_chunk$set(
     echo = FALSE,
-    fig.align = "c", fig.width = 6, fig.height = 4.5, 
-    out.width = 6, out.height = 4.5, fig.path = "figures/")
+    fig.align = "c", fig.width = 6, 
+    out.width = "3in", out.height = "2.25in")
+
+cas01 <- read.csv("data/HarvardCAS01.csv")
 ```
 
 ## Objective
 
-...
+- Data: 2001 Harvard College Alcohol Study (CAS)
+    
+  * `r nrow(cas01)` participants (unknown response rate)
+
+- Investigate the correlation structure between __subjective beliefs about campus alcohol policy__ and __objective measures of alcohol consumption__
+    
+- _Section B_ for subjective questions, _Section C_ for objective questions
+
+- Standard survey modeling techniques: factor analysis, structural equations model, item response theory
+
+## What A Structural Model Looks Like
+
+...Graphic plot here (believe will be better to include it soon to give the big picture)...
 
 ## Data Processing
+    
+- Aggressive pruning of the variables before modeling 
+    
+- Unreliable responses classified based on
+    
+  * Response to A7: A (alone) is not allowed with other responses (family/partner/roommate)
+        
+  * Response in Section C: participants who chose 1 in C10 and answered C11--C15, etc.
 
-...
+- `WEIGHT01` used as sampling weights (intended for cross-sectinoal studies) 
+
+## Missing Reponses
+
+- Missing response rate adjusted for questions that only target certain demographic subgroups
+
+```{r fig1_missing}
+include_graphics("figures/missing_per_person.png")
+```
+
+## Missing Responses for Each Section
+
+
 
 ## Methods
-
-...
-
-## Challenges
 
 ...
 
@@ -35,6 +68,10 @@ knitr::opts_chunk$set(
 ...
 
 ## Model Diagnostics
+
+...
+
+## Interpretation
 
 ...
 

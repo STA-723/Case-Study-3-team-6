@@ -1,3 +1,27 @@
+load('processedData_yb.Rdata')
+apply(features_complete,2,function(x)sum(is.na(x)))
+
+cas01 <- read.csv("data/HarvardCAS01.csv")
+sectionb_names <- c(paste0("B", c(1, 3, 5)), "B19",
+                    colnames(cas01)[grepl("B21", colnames(cas01))])
+sectionc_names <- c(paste0("C", c(1:2,7, 10:13)),
+                    colnames(cas01)[grepl("C17", colnames(cas01))],
+                    colnames(cas01)[grepl("C20", colnames(cas01))],
+                    colnames(cas01)[grepl("C22", colnames(cas01))]
+)
+predictor_names <- c(paste0("A", 1:6), 
+                     colnames(cas01)[grepl("A7", colnames(cas01))],
+                     colnames(cas01)[grepl("A8", colnames(cas01))],
+                     "F5", "G1", "G2",
+                     colnames(cas01)[grepl("G3", colnames(cas01))], "G4",
+                     colnames(cas01)[grepl("G5", colnames(cas01))],
+                     "G7", "G8", "G13")[-11] # We don't want E29A7!
+
+#features_complete$A6 = as.factor(features_complete$A6)
+#features_complete$G1 = as.factor(features_complete$G1)
+#features_complete$G4 = as.factor(features_complete$G4)
+
+
 library(lavaan)
 library(fields)
 
@@ -49,3 +73,14 @@ g1bcmod = paste(g1modb2,g1modc2,sep='\n')
 testbc = cfa(g1bcmod,data=group1)
 summary(testbc,fit.measures=T)
 fitMeasures(testbc, c('cfi','rmsea','srmr'))
+
+semmod = paste(g1bcmod,
+               paste('b1 ~ ',paste(predictor_names, collapse= ' + ')),
+               paste('b2 ~ ',paste(predictor_names, collapse= ' + ')),
+               paste('c1 ~ ',paste(predictor_names, collapse= ' + ')),
+               paste('c2 ~ ',paste(predictor_names, collapse= ' + ')),
+               sep = '\n')
+
+semtest = sem(semmod,data=features_complete)
+summary(semtest,fit.measures=T)
+fitMeasures(semtest, c('cfi','rmsea','srmr'))

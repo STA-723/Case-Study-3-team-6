@@ -18,6 +18,7 @@ library("VIM")
 library("dplyr")
 library("ggplot2")
 library("gridExtra")
+library("corrplot")
 ```
 
 ```{r}
@@ -91,6 +92,92 @@ aggr(features_complete %>% select(A1:A7A), numbers = TRUE, prop = c(TRUE, FALSE)
 We notice that there is high percentage of missingness (>50%) in C4 ("The last time you had four or more drinks in a row, how many drinks did you actually have"), C5 ("How long did it take to consume the number of drinks you indicated in question 4"), and C6 ("How much did you pay for one drink that last time you had four or more drinks in a row?"). People might have chosen not to answer because they haven't had four or more drinks in a row.
 
 For other variables, missingness is around or below 30%.
+
+
+# Figuring out latent factors
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(B1:B21I))))
+```
+
+Interesting that B3 and B5 are positively correlated: current policy is linent, and students want even more linient policy. B4 negatively correlate with other variables - those who are in favor of linient policy want the current situation to change.
+
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C1:C22S))))
+```
+
+This is too much. Would like to engineer certain columns.
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C14A:C14H))))
+```
+
+```{r}
+C14 <- rowSums(features_complete %>% select(C14A:C14H))
+```
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C17A:C17L))))
+```
+
+```{r}
+C17 <- rowSums(features_complete %>% select(C17A:C17L))
+```
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C18A:C18F))))
+```
+
+```{r}
+C18 <- rowSums(features_complete %>% select(C18A:C18F))
+```
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C19A:C19H))))
+```
+
+```{r}
+C19 <- rowSums(features_complete %>% select(C19A:C19H))
+```
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C20A:C20M))))
+```
+
+```{r}
+C20 <- rowSums(features_complete %>% select(C20A:C20M))
+```
+
+```{r}
+corrplot::corrplot(cor(na.omit(features_complete %>% select(C22A:C22S))))
+```
+
+```{r}
+C22 <- rowSums(features_complete %>% select(C22A:C22S))
+```
+
+```{r}
+C_Section <- cbind(features_complete %>% select(C1:C13), C14, C17, C18, C19, C20, features_complete %>% select(C21), C22)
+```
+
+```{r}
+# Visualize reduced dataset
+corrplot::corrplot(cor(na.omit(C_Section)))
+```
+
+C21 and C6 has strong positive correlation with each other but not with anyone else. Both are questions of how much one pays for alcohol. C22 has a negative correlation with everyone else.
+
+```{r}
+corrplot::corrplot(cor(na.omit(C_Section %>% select(-c("C22", "C6")))))
+```
+
+
+
+
+
+
+
 
 
 

@@ -31,12 +31,14 @@ cas01 <- read.csv("data/HarvardCAS01.csv")
 
 - Standard survey modeling techniques: factor analysis, structural equations model, item response theory
 
-## What A Structural Model Looks Like
-
-...Graphic plot here (believe will be better to include it soon to give the big picture)...
-
 ## Data Processing
-    
+
+- Consistent ordering of responses
+
+  - More stringent alcohol policy beliefs (1) -> Less stringent 
+  
+  - Less alcohol consumption (1) -> More consumption
+
 - Aggressive pruning of the variables before modeling 
     
 - Unreliable responses classified based on
@@ -58,18 +60,44 @@ include_graphics("figures/missing_per_person.png")
 ## Missing Responses for Each Section
 
 
+## What A Structural Model Looks Like
 
-## Methods
+...Graphic plot here (believe will be better to include it soon to give the big picture)...
 
-...
+## Structural Equations Modeling (SEM)
+
+  - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
+  
+  - Factor analysis identifies the loadings $\Lambda$ of latent variable $\eta_i$.
+  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,1),\; \epsilon_i\sim N(0,1)$$
+
+  - Structural Equations Models extend factor analysis by specifying within-question correlations and regressing $\eta_i$ on predictors.
+
+    * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
+    
+  - Causal interpretation is __not__ necessary (though often made!).
+
+## Modeling Challenges
+
+  - The model is clearly misspecified: Gaussian error assumption is made on ordered response
+  
+    * Asymptotic standard errors of factor loading estimators are valid for nonnormal factor analyses (Anderson and Amemiya, 1988)
+    
+    * In practice can cause lower goodness-of-fit
+    
+  - Complete case analysis due to excessive computation in maximizing the full likelihood
+
+  - (ANYTHING ELSE??)
 
 ## Main Results
 
-...
+A MATRIX PLOT OF LOADINGS (FACTOR CORRELATION) WILL BE GREAT HERE, RATHER THAN ANY ESTIMATE FIGURES ...
 
 ## Model Diagnostics
 
-...
+  - Various statistics to evaluate model fit in practice: TLI, BL89, CFI, RMSEA (Hu and Bentler, 1999)
+  
+  - (INCLUDE RESULTS HERE ...)
 
 ## Interpretation
 
@@ -77,5 +105,20 @@ include_graphics("figures/missing_per_person.png")
 
 ## Conclusion
 
-...
+- ...
+
+- Limitations
+
+  * Alternative approaches to account for ordered response
+  
+  * Theory-driven priors may improve fit of more complex models
+  
+  * Need information to correct for estimate biases
+  
+## Reference
+
+  - "Asymptotic Chi-Square Tests for a Large Class of Factor Analysis Models," Anderson, T. W. and Amemiya, Y. _The Annals of Statistics_, 16(2), 1988.
+  
+  - "Cutoff criteria for fit indexes in covariance structure analysis: Conventional criteria versus new alternatives," Hu, L.-T. and Bentler, P. M. _Structural Equation Modeling: A Multidisciplinary Journal_, 6(1), 1999.
+
 

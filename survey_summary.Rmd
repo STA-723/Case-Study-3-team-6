@@ -197,32 +197,6 @@ features[,grepl("C22", variable_names)] <- apply(features[,grepl("C22", variable
 
 I believe this should offer us all a common starting point.
 
-# Model: What do we want to fit?
-
-    1. Sub-divide the participants into different groups. This depends on which questions they had to answer in Section C. The groups will be
-    
-        i. Had >=4 drinks in a row within last two weeks (habitual binge drinker)
-        
-        ii. Not above, but had drinks within 30 days (habitual drinker)
-        
-        iii. Drink in previous year but > 30 days ago (occasional drinker)
-        
-        iv. No drink in previous year (little to no drinker)
-    
-    A tricky situation happens if the participant did not respond to precisely those questions that allow us to classify her into one of the groups. We discard those cases for simplicity of the model.
-    
-    2. For now, fit a separate SEM model for each of the groups. 
-    
-        i. Exogenous variables are not "manifested," but rather directly observed, to keep the model fit under control. This means some imputation scheme is needed for the missing demographic variables.
-        
-        ii. Allow some correlation across questions conditional on the latent effects (factor scores). Especially for those questions which are really sub-questions.
-        
-        iii. Missing value should not really be a concern; if, however, computation is too taxing, we should be able to get away with some simple imputation scheme.
-    
-        iv. Include the 2001 sampling weights (not calibrated with the previous years' weights). The `lavaan` package states that it scales the weights if they do not sum up, but I think it will be safe to just scale them by myself manually when fitting different sub-population group models.
-        
-        v. Interpret what is actually going on (this is likely going to be challenging).
-
 # Dealing with Missing cases and Unreliable responses
 Excluding all observations that have missing values in predictors seems like a convenient starting point. There are 1330 cases to be excluded from the analysis. As below, further cases may need to be removed since we do not have enough information about which population group a participant belongs to for the indirect response variables. Alternatively, we can do MICE. Some variable mutation (previous survey experience as numeric, etc.) follows in the code.
 
@@ -262,26 +236,27 @@ features_complete <- features[!apply(features[,predictor_names], 1, anyNA),]
 
 ```{r grouping}
 #
-group1 <- features_complete %>% filter(C1!=1 | C2!=1)
-group2 <- features_complete %>% filter(C1==1, C2==1, C10 > 3)
-group3 <- features_complete %>% filter(C10 == 3)
-group4 <- features_complete %>% filter(C10 <= 2)
-# Excluded: 56 people who do not meet the above filter (missing response in some of the questions)
+# group1 <- features_complete %>% filter(C1!=1 | C2!=1)
+# group2 <- features_complete %>% filter(C1==1, C2==1, C10 > 3)
+# group3 <- features_complete %>% filter(C10 == 3)
+# group4 <- features_complete %>% filter(C10 <= 2)
 #
 # 2nd criterion (Question C7)
 # Did someone make a mistake in responding to sections one is not expected to?
-group2$unreliable <- ifelse(!is.na(group2$C6), 1, group2$unreliable) # 210
-group3$unreliable <- ifelse(!is.na(group3$C6), 1, group3$unreliable) # 85
-group4$unreliable <- ifelse(!is.na(group4$C6), 1, group4$unreliable) # 34
+features_complete$unreliable <- ifelse(!is.na(features_complete$C1) & !is.na(features_complete$C2) & 
+                                           features_complete$C1==1 & features_complete$C2==1 &
+                                           !is.na(features_complete$C6), 
+                                       1, features_complete$unreliable) 
 
-# For group4, exist people who reponded to group 1/2/3 section (C17 ~ C21)
-group4$unreliable <- ifelse(apply(group4[,34:73], 1, function(x) !all(is.na(x))), 1, group4$unreliable) # 250
-
-# Excluding certain variables for each population groups
-group2 <- group2[,-c(17, 18, 19)]
-group3 <- group3[,-c(17:33)]
-group4 <- group4[,-c(17:73)]
+features_complete$unreliable[!is.na(features_complete$C10) & features_complete$C10 <= 2] <- ifelse(
+    apply(features_complete[!is.na(features_complete$C10) & features_complete$C10 <= 2,23:73], 1, 
+          function(x) !all(is.na(x))),
+    1, features_complete$unreliable)
+# 
+# # Excluding certain variables for each population groups
+# group2 <- group2[,-c(17, 18, 19)]
+# group3 <- group3[,-c(17:33)]
+# group4 <- group4[,-c(17:73)]
 ```
 
-So in total, we have `r nrow(group1) + nrow(group2) + nrow(group3) + nrow(group4)` cases for the analysis, sub-divided into four population groups, for each of which we fit a separate CFA/SEM model. For each of the above outlined four groups we have `r paste(c(nrow(group1), nrow(group2), nrow(group3), nrow(group4)), collapse = ", ")` cases, respectively. 
-
+So in total, we have `r nrow(features_complete)` cases for the analysis. 

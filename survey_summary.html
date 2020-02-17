@@ -479,37 +479,11 @@ summary {
 <p>Responses to questions B7, C3, C15, and C16 are categorical. For questions C20 and C22, direction of encoding is Not At All Important (less reliance) -&gt; Very Important (more reliance).</p>
 <p>I believe this should offer us all a common starting point.</p>
 </div>
-<div id="model-what-do-we-want-to-fit" class="section level1">
-<h1>Model: What do we want to fit?</h1>
-<pre><code>1. Sub-divide the participants into different groups. This depends on which questions they had to answer in Section C. The groups will be
-
-    i. Had &gt;=4 drinks in a row within last two weeks (habitual binge drinker)
-    
-    ii. Not above, but had drinks within 30 days (habitual drinker)
-    
-    iii. Drink in previous year but &gt; 30 days ago (occasional drinker)
-    
-    iv. No drink in previous year (little to no drinker)
-
-A tricky situation happens if the participant did not respond to precisely those questions that allow us to classify her into one of the groups. We discard those cases for simplicity of the model.
-
-2. For now, fit a separate SEM model for each of the groups. 
-
-    i. Exogenous variables are not &quot;manifested,&quot; but rather directly observed, to keep the model fit under control. This means some imputation scheme is needed for the missing demographic variables.
-    
-    ii. Allow some correlation across questions conditional on the latent effects (factor scores). Especially for those questions which are really sub-questions.
-    
-    iii. Missing value should not really be a concern; if, however, computation is too taxing, we should be able to get away with some simple imputation scheme.
-
-    iv. Include the 2001 sampling weights (not calibrated with the previous years&#39; weights). The `lavaan` package states that it scales the weights if they do not sum up, but I think it will be safe to just scale them by myself manually when fitting different sub-population group models.
-    
-    v. Interpret what is actually going on (this is likely going to be challenging).</code></pre>
-</div>
 <div id="dealing-with-missing-cases-and-unreliable-responses" class="section level1">
 <h1>Dealing with Missing cases and Unreliable responses</h1>
 <p>Excluding all observations that have missing values in predictors seems like a convenient starting point. There are 1330 cases to be excluded from the analysis. As below, further cases may need to be removed since we do not have enough information about which population group a participant belongs to for the indirect response variables. Alternatively, we can do MICE. Some variable mutation (previous survey experience as numeric, etc.) follows in the code.</p>
 <p>On the other hand, there is another data processing issue for unreliable responses. Take A7, which allows multiple responses. There are at least 30 people who responded they live alone <em>and</em> also live with someone else (roommate/spouse/parents, etc.). Part of this is a systematic misunderstanding of the survey instructions: there are at least 329 participants who thought even though they responded “None” to both C1 and C2, they still had to respond to C6. The unreliability of some of these responses must be accounted for. One approach would be first sub-dividing our sample into different population groups, and for each group fitting a <em>group-wise</em> SEM. Fitting can be an issue, but this we can think of later. This also implies that when we subdivide the sample, there will be some cases excluded because their responses are missing for precisely the questions that allow us to classify their population group (56 in this case).</p>
-<p>So in total, we have 9518 cases for the analysis, sub-divided into four population groups, for each of which we fit a separate CFA/SEM model. For each of the above outlined four groups we have 4325, 2169, 1263, 1761 cases, respectively.</p>
+<p>So in total, we have 9574 cases for the analysis.</p>
 </div>
 
 

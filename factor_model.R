@@ -93,5 +93,22 @@ semmod = paste(g1bcmod,
 cat(semmod)
 
 semtest = sem(semmod,data=features_complete)
+semtest2 = sem(semmod,data=features_complete,sampling.weights = 'weights')
 summary(semtest,fit.measures=T)
-fitMeasures(semtest, c('cfi','rmsea','srmr'))
+fitMeasures(semtest2, c('cfi','rmsea','srmr'))
+
+save(semtest,file='sem_fit1.Rdata')
+save(semtest2,file='sem_fit2.Rdata')
+
+sem_sum = summary(semtest2)
+summary(semtest2)
+
+print(sem_sum)
+save(sem_sum,file='sem_sum.Rdata')
+
+sem_cov = inspect(semtest2,'est')$psi[1:5,1:5]
+png('factor_cor.png')
+image.plot(cov2cor(sem_cov),zlim=c(-1,1),xaxt='n',yaxt='n')
+axis(1,at=seq(0,1,length=5),labels = c('b1','b2','c1','c2','c3'))
+axis(2,at=seq(0,1,length=5),labels = c('b1','b2','c1','c2','c3'))
+dev.off()

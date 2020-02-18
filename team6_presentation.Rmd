@@ -63,6 +63,9 @@ include_graphics("figures/missing_per_person.png")
 ## What A Structural Model Looks Like
 
 ...Graphic plot here (believe will be better to include it soon to give the big picture)...
+```{r graph}
+include_graphics("model_graph.PNG")
+```
 
 ## Structural Equations Modeling (SEM)
 
@@ -91,13 +94,32 @@ include_graphics("figures/missing_per_person.png")
 
 ## Main Results
 
-A MATRIX PLOT OF LOADINGS (FACTOR CORRELATION) WILL BE GREAT HERE, RATHER THAN ANY ESTIMATE FIGURES ...
+We define two factors corresponding to Section B of the survey, which we characterize as:
+
+B1: Perception of strictness in school's alcohol policy, and
+B2: Desire for less restrictive alcohol policies
+
+We also define three factors corresponding to Section C of the survcy, which we characterize as:
+
+C1: Volume of Drinking
+C2: Motivation for Drinking
+C3: Inhibition towards Drinking
+
+## Main Results
+
+Correlation between latent factors:
+```{r factor cor}
+include_graphics("factor_cor.png")
+```
 
 ## Model Diagnostics
 
-  - Various statistics to evaluate model fit in practice: TLI, BL89, CFI, RMSEA (Hu and Bentler, 1999)
+  - Various statistics to evaluate model fit in practice (and suggested threshold indicating good fit): CFI (> .95), RMSEA (< .08), SRMR (< .06) (See Hu and Bentler, 1999)
   
-  - (INCLUDE RESULTS HERE ...)
+  - Goodness of fit statistics for our model:
+  
+    CFI: 0.866, RMSEA: 0.041, SRMR: 0.027
+    
 
 ## Interpretation
 

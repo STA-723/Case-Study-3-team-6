@@ -71,7 +71,7 @@ include_graphics("figures/missing_per_person.png")
 
     * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
     
- That is, $$\eta_i = \Gamma Z_i + \epsilon_{\eta, i}, \epsilon_{\eta, i} \sim N(0, I)$$, where $Z_i$ are demographic predictors
+ That is, $$\eta_i = B \eta_i + \Gamma Z_i + \epsilon_{\eta, i}, \epsilon_{\eta, i} \sim N(0, I)$$, where $Z_i$ are demographic predictors
     
   - Causal interpretation is __not__ necessary (though often made!).
 

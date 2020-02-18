@@ -285,6 +285,8 @@ features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), co
 
 features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C13", colnames(features_complete))]] <- 0
 
+features_complete[features_complete$C10 <= 3 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C14", colnames(features_complete))]] <- 1
+
 features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C17", colnames(features_complete))]] <- 0
 
 features_complete[features_complete$C10 <= 2 & !is.na(features_complete$C10), colnames(features_complete)[grepl("C18", colnames(features_complete))]] <- 0

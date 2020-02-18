@@ -60,10 +60,6 @@ include_graphics("figures/missing_per_person.png")
 ## Missing Responses for Each Section
 
 
-## What A Structural Model Looks Like
-
-...Graphic plot here (believe will be better to include it soon to give the big picture)...
-
 ## Structural Equations Modeling (SEM)
 
   - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
@@ -76,6 +72,10 @@ include_graphics("figures/missing_per_person.png")
     * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
     
   - Causal interpretation is __not__ necessary (though often made!).
+
+## Graphical Representation of the Model
+
+...PLOT...
 
 ## Modeling Challenges
 

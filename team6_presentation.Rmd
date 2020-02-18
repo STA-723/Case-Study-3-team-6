@@ -60,6 +60,7 @@ include_graphics("figures/missing_per_person.png")
 ## Missing Responses for Each Section
 
 
+<<<<<<< HEAD
 ## What A Structural Model Looks Like
 
 ...Graphic plot here (believe will be better to include it soon to give the big picture)...
@@ -67,18 +68,26 @@ include_graphics("figures/missing_per_person.png")
 include_graphics("model_graph.PNG")
 ```
 
+=======
+>>>>>>> 1242f462d3b86806b4f07d6cc047dc52c9558fea
 ## Structural Equations Modeling (SEM)
 
   - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
   
   - Factor analysis identifies the loadings $\Lambda$ of latent variable $\eta_i$.
-  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,1),\; \epsilon_i\sim N(0,1)$$
+  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,I),\; \epsilon_i\sim N(0,I)$$
 
   - Structural Equations Models extend factor analysis by specifying within-question correlations and regressing $\eta_i$ on predictors.
 
     * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
     
+ That is, $$\eta_i = B \eta_i + \Gamma Z_i + \epsilon_{\eta, i}, \epsilon_{\eta, i} \sim N(0, I)$$, where $Z_i$ are demographic predictors
+    
   - Causal interpretation is __not__ necessary (though often made!).
+
+## Graphical Representation of the Model
+
+...PLOT...
 
 ## Modeling Challenges
 
@@ -123,7 +132,13 @@ include_graphics("factor_cor.png")
 
 ## Interpretation
 
-...
+B5 and B3: current policy is linent, and students want even more linient policy; B19: minimal drinking age, Better knowledge of drinking, less alcohol use, more against drinking (C22); B3 and C's: stronger enforcement of policy does correlate with less consumption; B1, B5 and C's: however wanting more linient policy correlate with more consumption
+
+```{r model_cor, fig.width=3, fig.height=3, fig.cap="\\label{fig:model_cor}Model implied correlation"}
+include_graphics("figures/model_cor.png")
+```
+
+
 
 ## Conclusion
 

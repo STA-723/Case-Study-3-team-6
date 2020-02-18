@@ -57,10 +57,7 @@ cas01 <- read.csv("data/HarvardCAS01.csv")
 include_graphics("figures/missing_per_person.png")
 ```
 
-## Missing Responses for Each Section
 
-
-<<<<<<< HEAD
 ## What A Structural Model Looks Like
 
 ...Graphic plot here (believe will be better to include it soon to give the big picture)...
@@ -68,8 +65,7 @@ include_graphics("figures/missing_per_person.png")
 include_graphics("model_graph.PNG")
 ```
 
-=======
->>>>>>> 1242f462d3b86806b4f07d6cc047dc52c9558fea
+
 ## Structural Equations Modeling (SEM)
 
   - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...

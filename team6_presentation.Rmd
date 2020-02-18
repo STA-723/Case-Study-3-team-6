@@ -23,11 +23,11 @@ cas01 <- read.csv("data/HarvardCAS01.csv")
 
 - Data: 2001 Harvard College Alcohol Study (CAS)
     
-  * `r nrow(cas01)` participants (unknown response rate)
+    - `r nrow(cas01)` participants (unknown response rate)
 
-- Investigate the correlation structure between __subjective beliefs about campus alcohol policy__ and __objective measures of alcohol consumption__
+- Goal: Investigate the correlation structure between __subjective beliefs about campus alcohol policy__ and __objective measures of alcohol consumption__
     
-- _Section B_ for subjective questions, _Section C_ for objective questions
+    - _Section B_ for subjective questions, _Section C_ for objective questions
 
 - Standard survey modeling techniques: factor analysis, structural equations model, item response theory
 
@@ -35,19 +35,19 @@ cas01 <- read.csv("data/HarvardCAS01.csv")
 
 - Consistent ordering of responses
 
-  - More stringent alcohol policy beliefs (1) -> Less stringent 
+    - More stringent alcohol policy beliefs (1) -> Less stringent 
   
-  - Less alcohol consumption (1) -> More consumption
+    - Less alcohol consumption (1) -> More consumption
 
 - Aggressive pruning of the variables before modeling 
     
 - Unreliable responses classified based on
     
-  * Response to A7: A (alone) is not allowed with other responses (family/partner/roommate)
+    - Response to A7: A (alone) is not allowed with other responses (family/partner/roommate)
         
-  * Response in Section C: participants who chose 1 in C10 and answered C11--C15, etc.
+    - Response in Section C: participants who chose 1 in C10 and answered C11--C15, etc.
 
-- `WEIGHT01` used as sampling weights (intended for cross-sectinoal studies) 
+- `WEIGHT01` used as sampling weights (intended for cross-sectional studies) 
 
 ## Missing Reponses
 
@@ -59,34 +59,31 @@ include_graphics("figures/missing_per_person.png")
 
 - After adjustment missing rate quite low - around or below 10 percent
 
-## Selection of variables
+## Questions Included
 
-* B1, B3, B5, B19, B21
-* C1, C2, C7, C10, C11, C12, C13, C17, C20, C22
+* Section B: B1, B3, B5, B19, B21
+* Section C: C1, C2, C7, C10, C11, C12, C13, C17, C20, C22
+* Predictors/Exogenous: Section A, F5, G1, G2, G3, G4, G7, G8, G13
 
-## What A Structural Model Looks Like
+## Graphical Representation of the Model
 
-...Graphic plot here (believe will be better to include it soon to give the big picture)...
-```{r graph}
+```{r graph, out.width = "4in", out.height = "3in"}
 include_graphics("model_graph.PNG")
 ```
 
-
 ## Structural Equations Modeling (SEM)
 
-  - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
+- Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
   
-  - Factor analysis identifies the loadings $\Lambda$ of latent variable $\eta_i$.
-  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,I),\; \epsilon_i\sim N(0,I)$$
+- Factor analysis identifies the loadings $\Lambda$ of (scaled/centered) latent variable $\eta_i$.
+  $$X_i = \Lambda\eta_i + \epsilon_i,\; \epsilon_i\stackrel{iid}{\sim} N(0,\sigma^2)$$
 
-  - Structural Equations Models extend factor analysis by specifying within-question correlations and regressing $\eta_i$ on predictors.
+- Structural Equations Models extend factor analysis by specifying within-question correlations and regressing $\eta_i$ on exogenous $Z_i$'s:
+  $$\eta_i = B \eta_i + \Gamma Z_i + \nu_i, \nu_i\stackrel{iid}{\sim} N(0,\tau^2)$$
 
-    * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
+    * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, etc.
     
- That is, $$\eta_i = B \eta_i + \Gamma Z_i + \epsilon_{\eta, i}, \epsilon_{\eta, i} \sim N(0, I)$$, where $Z_i$ are demographic predictors
-    
-  - Causal interpretation is __not__ necessary (though often made!).
-
+    * Causal interpretation is __not__ necessary (though often made!).
 
 ## Modeling Challenges
 
@@ -98,26 +95,34 @@ include_graphics("model_graph.PNG")
     
   - Complete case analysis due to excessive computation in maximizing the full likelihood
 
+## Main Results
+
+2 factors corresponding to Section B of the survey
+
+    * B1: Perception of strictness in school's alcohol policy
+    * B2: Desire for less restrictive alcohol policies
+
+3 factors corresponding to Section C of the survey
+
+    * C1: Volume of Drinking
+    * C2: Motivation for Drinking
+    * C3: Inhibition towards Drinking
 
 ## Main Results
 
-We define two factors corresponding to Section B of the survey, which we characterize as:
-
-B1: Perception of strictness in school's alcohol policy, and
-B2: Desire for less restrictive alcohol policies
-
-We also define three factors corresponding to Section C of the survcy, which we characterize as:
-
-C1: Volume of Drinking
-C2: Motivation for Drinking
-C3: Inhibition towards Drinking
-
-## Main Results
-
-Correlation between latent factors:
-```{r factor cor}
+```{r factor cor, out.width = "4in", out.height = "3in", fig.cap="\\label{fig:factor_cor}Correlation between latent factors"}
 include_graphics("factor_cor.png")
 ```
+
+## Interpretation of Factors
+
+* Strictness Perception uncorrelated with other factors
+
+* Desire for less restrictive policy correlated with drinking volume (+) and inhibition (-)
+
+* Drinking volume uncorrelated with motivation
+
+* Motiviation and inhibition negatively correlated
 
 ## Model Diagnostics
 
@@ -127,24 +132,24 @@ include_graphics("factor_cor.png")
   
     CFI: 0.866, RMSEA: 0.041, SRMR: 0.027
     
+## Implication: Survey Questions
 
-## Interpretation and Conclusion
-
-B5 and B3: current policy is linent, and students want even more linient policy; B19: minimal drinking age, Better knowledge of drinking, less alcohol use, more against drinking (C22); B3 and C's: stronger enforcement of policy does correlate with less consumption; B1, B5 and C's: however wanting more linient policy correlate with more consumption
-
-```{r model_cor, fig.width=3, fig.height=3, fig.cap="\\label{fig:model_cor}Model implied correlation"}
+```{r model_cor, out.width = "4in", out.height = "3in", fig.cap="\\label{fig:model_cor}Implied correlation between questions"}
 include_graphics("figures/model_cor.png")
 ```
 
+## Implication: Survey Questions
 
+- __B3 and B5__: Students who believe current policy is lenient want even _more_ lenience
 
-## Interpretation and Conclusion
+- __B19__: Minimal drinking age question negatively correlates with alcohol consumption
+    * Positive correlation with C22 sub-questions (more dependence on alcohol to resolve problems)
 
-- ...
+- Between-section correlation is weak except for certain prominent questions: B19, B21
 
-- Limitations
+## Future Imporvements
 
-  * Alternative approaches to account for ordered response
+  * Better model to account for ordinal response
   
   * Theory-driven priors may improve fit of more complex models
   

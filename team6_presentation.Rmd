@@ -57,6 +57,12 @@ cas01 <- read.csv("data/HarvardCAS01.csv")
 include_graphics("figures/missing_per_person.png")
 ```
 
+- After adjustment missing rate quite low - around or below 10 percent
+
+## Selection of variables
+
+* B1, B3, B5, B19, B21
+* C1, C2, C7, C10, C11, C12, C13, C17, C20, C22
 
 ## What A Structural Model Looks Like
 
@@ -81,9 +87,6 @@ include_graphics("model_graph.PNG")
     
   - Causal interpretation is __not__ necessary (though often made!).
 
-## Graphical Representation of the Model
-
-...PLOT...
 
 ## Modeling Challenges
 
@@ -95,7 +98,6 @@ include_graphics("model_graph.PNG")
     
   - Complete case analysis due to excessive computation in maximizing the full likelihood
 
-  - (ANYTHING ELSE??)
 
 ## Main Results
 
@@ -126,7 +128,7 @@ include_graphics("factor_cor.png")
     CFI: 0.866, RMSEA: 0.041, SRMR: 0.027
     
 
-## Interpretation
+## Interpretation and Conclusion
 
 B5 and B3: current policy is linent, and students want even more linient policy; B19: minimal drinking age, Better knowledge of drinking, less alcohol use, more against drinking (C22); B3 and C's: stronger enforcement of policy does correlate with less consumption; B1, B5 and C's: however wanting more linient policy correlate with more consumption
 
@@ -136,7 +138,7 @@ include_graphics("figures/model_cor.png")
 
 
 
-## Conclusion
+## Interpretation and Conclusion
 
 - ...
 

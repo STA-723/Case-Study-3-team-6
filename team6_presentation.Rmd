@@ -69,11 +69,13 @@ include_graphics("figures/missing_per_person.png")
   - Survey responses $X_i$ can be grouped together as repeated measurements of a lower-dimensional, latent _factors_: alcohol beliefs, alcohol consumption attitude, ...
   
   - Factor analysis identifies the loadings $\Lambda$ of latent variable $\eta_i$.
-  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,1),\; \epsilon_i\sim N(0,1)$$
+  $$X_i = \Lambda\eta_i + \epsilon_i,\; \eta_i \sim N(0,I),\; \epsilon_i\sim N(0,I)$$
 
   - Structural Equations Models extend factor analysis by specifying within-question correlations and regressing $\eta_i$ on predictors.
 
     * All of our model predictors are directly observed rather than "manifested" by questions: age, gender, ...
+    
+ That is, $$\eta_i = \Gamma Z_i + \epsilon_{\eta, i}, \epsilon_{\eta, i} \sim N(0, I)$$, where $Z_i$ are demographic predictors
     
   - Causal interpretation is __not__ necessary (though often made!).
 

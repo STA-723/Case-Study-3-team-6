@@ -103,7 +103,13 @@ A MATRIX PLOT OF LOADINGS (FACTOR CORRELATION) WILL BE GREAT HERE, RATHER THAN A
 
 ## Interpretation
 
-...
+B5 and B3: current policy is linent, and students want even more linient policy; B19: minimal drinking age, Better knowledge of drinking, less alcohol use, more against drinking (C22); B3 and C's: stronger enforcement of policy does correlate with less consumption; B1, B5 and C's: however wanting more linient policy correlate with more consumption
+
+```{r model_cor, fig.width=3, fig.height=3, fig.cap="\\label{fig:model_cor}Model implied correlation"}
+include_graphics("figures/model_cor.png")
+```
+
+
 
 ## Conclusion
 
